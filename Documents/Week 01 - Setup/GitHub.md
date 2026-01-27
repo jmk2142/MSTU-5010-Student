@@ -2,6 +2,9 @@
 
 This course is managed through the **MSTU 5010 - Student** repository. You’ll use Git/GitHub to get the latest materials and (sometimes) submit work.
 
+## Course repo (upstream)
+- https://github.com/jmk2142/MSTU-5010-Student
+
 ## Git vs GitHub (what’s the difference?)
 - **Git** is the tool on your computer that tracks file changes over time (like “save points” for code).
 - **GitHub** is a website that hosts Git repositories online so you can download them, collaborate, and submit changes.
@@ -36,20 +39,22 @@ If you don’t have Git:
 
 This helps VS Code work smoothly with GitHub (cloning, syncing, and pull requests).
 
+Tip: We’ll use **HTTPS + browser login** for authentication (no SSH keys needed for this course setup).
+
 ## Get the course repository (clone)
 Cloning downloads the repository to your computer.
 
 ### Option A: VS Code (recommended)
 1. In VS Code, open the Command Palette: `Cmd+Shift+P` / `Ctrl+Shift+P`
 2. Choose **“Git: Clone”**
-3. Paste the repository URL your instructor provides
+3. Paste the course repo URL: `https://github.com/jmk2142/MSTU-5010-Student`
 4. Choose a folder on your computer to save it
 5. When prompted, click **Open**
 
 ### Option B: Terminal
 1. Copy the repo URL from GitHub
 2. Run:
-   - `git clone <REPO_URL>`
+   - `git clone https://github.com/jmk2142/MSTU-5010-Student.git`
 3. Open the folder in VS Code.
 
 ## Stay up to date (pull)

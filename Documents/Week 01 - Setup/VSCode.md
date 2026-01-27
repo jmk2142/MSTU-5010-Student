@@ -57,7 +57,7 @@ We’ll primarily use the **ChatGPT extension** in VS Code.
 - Install it from Extensions (`Cmd+Shift+X` / `Ctrl+Shift+X`) by searching `openai.chatgpt`.
 - Use it for help explaining code, debugging, and generating starter code.
 
-For details and safety notes, see: `Documents/Codex.md`.
+For details and safety notes, see: `Documents/Week 01 - Setup/Codex.md`.
 
 ## Integrated terminal (what it’s for)
 The terminal is where you run commands for your project.
@@ -124,6 +124,6 @@ VS Code may ask whether you trust a folder.
 Suggestion: keep related files together in a project folder (e.g., `index.html`, `styles.css`, `script.js`).
 
 ## Suggested next docs
-- `Documents/GitHub.md` (Git + GitHub basics)
-- `Documents/Markdown.md` (Markdown and previews)
-- `Documents/Codex.md` (AI assistant setup + safety)
+- `Documents/Week 01 - Setup/GitHub.md` (Git + GitHub basics)
+- `Documents/Week 01 - Setup/Markdown.md` (Markdown and previews)
+- `Documents/Week 01 - Setup/Codex.md` (AI assistant setup + safety)
