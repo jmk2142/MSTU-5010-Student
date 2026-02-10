@@ -53,11 +53,38 @@ async function readSchemaText() {
 
 async function postChatCompletion({ apiBase, request }) {
   const url = `${apiBase}/chat/completions`;
-  const res = await fetch(url, {
+  const opts = {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(request),
-  });
+  };
+
+  let res;
+  try {
+    res = await fetch(url, opts);
+  } catch (err) {
+    // Common on macOS: `localhost` resolves to IPv6 `::1`, but the server only listens on IPv4 `127.0.0.1`.
+    // Retry once on IPv4 to keep the demo friction-free.
+    const shouldRetry =
+      String(url).includes("://localhost:") &&
+      (String(err?.cause?.address || "") === "::1" || String(err?.cause?.message || "").includes("::1"));
+    if (shouldRetry) {
+      const retryUrl = String(url).replace("://localhost:", "://127.0.0.1:");
+      try {
+        res = await fetch(retryUrl, opts);
+      } catch (err2) {
+        const detail = err2?.cause?.code || err2?.cause?.message || err2?.message || String(err2);
+        const wrapped = new Error(`fetch failed (${detail}). Try --base-url http://127.0.0.1:1234`);
+        wrapped.cause = err2;
+        throw wrapped;
+      }
+    } else {
+      const detail = err?.cause?.code || err?.cause?.message || err?.message || String(err);
+      const wrapped = new Error(`fetch failed (${detail})`);
+      wrapped.cause = err;
+      throw wrapped;
+    }
+  }
 
   const bodyText = await res.text();
   let data;

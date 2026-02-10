@@ -29,17 +29,18 @@ Use `system-prompt.txt` as the system prompt/instructions.
 
 ## Step 3: Run the REPL
 From this folder:
-- `node index.js --base-url http://localhost:1234`
+- `node index.js --base-url http://127.0.0.1:1234`
 
 Debug mode:
-- `node index.js --base-url http://localhost:1234 --debug`
+- `node index.js --base-url http://127.0.0.1:1234 --debug`
 
 Optional:
-- `node index.js --base-url http://localhost:1234 --model ministral-3-3b-instruct-2512`
+- `node index.js --base-url http://127.0.0.1:1234 --model ministral-3-3b-instruct-2512`
 
 Note:
 - Your LM Studio base URL and model id may differ.
 - If your base URL already ends with `/v1`, that’s OK (the script normalizes either form).
+- If `localhost` gives `fetch failed`, use `127.0.0.1` (some setups resolve `localhost` to IPv6 `::1`).
 
 ## What we’ll discuss in class today
 - What failure looks like under “strict schema” (refusal, invalid JSON, wrong enum, missing keys)
