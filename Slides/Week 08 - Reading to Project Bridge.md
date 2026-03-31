@@ -13,6 +13,8 @@ style: |
 
 **Shibata and Tanie: representation, interpretation, evidence**
 
+Course readings folder: [Google Drive](https://drive.google.com/drive/folders/1kCWXifyNegE5GBZXKlC-oh20U71H6HJi?usp=sharing)
+
 ---
 
 ## Opening question

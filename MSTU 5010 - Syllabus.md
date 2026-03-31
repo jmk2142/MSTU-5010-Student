@@ -5,6 +5,7 @@
 **Meeting Time:** Tuesdays, 1:00–2:40pm  
 **Office Hours:** https://bit.ly/jmk2142-appointments  
 **Required Readings:** To be determined (see **Course Structure and Flow**)
+**Course Readings Folder:** [Google Drive](https://drive.google.com/drive/folders/1kCWXifyNegE5GBZXKlC-oh20U71H6HJi?usp=sharing)
 
 ---
 

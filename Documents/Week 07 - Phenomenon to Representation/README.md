@@ -22,6 +22,8 @@ Use both of these sentence stems:
 - `Analytically, I can study this by...`
 - `Systemically, I can study this by...`
 
+Course readings folder: [Google Drive](https://drive.google.com/drive/folders/1kCWXifyNegE5GBZXKlC-oh20U71H6HJi?usp=sharing)
+
 Guidelines:
 - Analytic lens: isolate one variable/mechanism.
 - Systemic lens: trace relationships and context-level patterns.

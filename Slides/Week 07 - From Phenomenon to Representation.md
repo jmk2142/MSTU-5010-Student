@@ -111,6 +111,8 @@ Then propose your direction:
 
 You have **not** read this yet. Quick orientation:
 
+Course readings folder: [Google Drive](https://drive.google.com/drive/folders/1kCWXifyNegE5GBZXKlC-oh20U71H6HJi?usp=sharing)
+
 - Topic: how humans interpret social/emotional meaning in robot interaction
 - Claim: robot value is not only technical performance; subjective interpretation matters
 - Design move: they build/evaluate animal-like robots to explore that claim

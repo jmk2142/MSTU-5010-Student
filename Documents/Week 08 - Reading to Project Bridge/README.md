@@ -5,6 +5,8 @@ This week we use Shibata and Tanie to ask a practical design question:
 
 **How does a designed system come to represent a human phenomenon, and what counts as evidence for that claim?**
 
+Course readings folder: [Google Drive](https://drive.google.com/drive/folders/1kCWXifyNegE5GBZXKlC-oh20U71H6HJi?usp=sharing)
+
 The paper argues that social meaning does not live only inside a machine.
 Meaning emerges through interaction, embodiment, prior knowledge, and interpretation.
 
