@@ -16,6 +16,17 @@ Course readings folder: [Google Drive](https://drive.google.com/drive/folders/1k
 This week widens the conversation beyond problem-solving alone.
 It asks how systems frame meaning, how people interpret outputs and interfaces, and what kinds of ambiguity should remain open rather than resolved too quickly.
 
+## Technical Supplement
+
+This week also includes an optional technical supplement on agentic browser testing with Playwright.
+It is not the main conceptual focus of the week, but it can help you test and refine project work in a more structured way.
+
+Supplement:
+
+- `Supplements/Agentic-Testing-with-Playwright-Setup-Guide.md`
+- `Demos/Week 11/Playwright Todo Agent Demo/`
+- `Slides/Week 11 - Interpretation, Meaning-Making, and Agentic Testing.md`
+
 ## What To Look For
 As you read, identify four things:
 

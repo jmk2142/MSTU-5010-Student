@@ -1,0 +1,612 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Week 11 Playwright Todo Demo</title>
+    <link rel="icon" href="data:,">
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f3f1eb;
+        --panel: #fffdf8;
+        --ink: #1e2430;
+        --muted: #5f6c80;
+        --line: #d7d1c5;
+        --accent: #0f766e;
+        --accent-soft: #d5f4ef;
+        --danger: #c2410c;
+        --danger-soft: #ffe3d5;
+        --done: #64748b;
+        --shadow: 0 24px 60px rgba(30, 36, 48, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: Georgia, "Times New Roman", serif;
+        background:
+          radial-gradient(circle at top left, rgba(15, 118, 110, 0.14), transparent 26rem),
+          linear-gradient(180deg, #f8f5ef 0%, var(--bg) 100%);
+        color: var(--ink);
+      }
+
+      .shell {
+        max-width: 840px;
+        margin: 0 auto;
+        padding: 48px 24px 72px;
+      }
+
+      .demo-cursor {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 18px;
+        height: 18px;
+        border: 2px solid rgba(15, 118, 110, 0.95);
+        border-radius: 999px;
+        background: rgba(15, 118, 110, 0.2);
+        box-shadow: 0 0 0 8px rgba(15, 118, 110, 0.08);
+        pointer-events: none;
+        opacity: 0;
+        transform: translate3d(-999px, -999px, 0);
+        transition:
+          opacity 120ms ease,
+          transform 70ms linear,
+          box-shadow 120ms ease,
+          background-color 120ms ease;
+        z-index: 9999;
+      }
+
+      .demo-cursor.visible {
+        opacity: 1;
+      }
+
+      .demo-cursor.pressed {
+        background: rgba(194, 65, 12, 0.24);
+        border-color: rgba(194, 65, 12, 0.95);
+        box-shadow: 0 0 0 12px rgba(194, 65, 12, 0.12);
+      }
+
+      .hero {
+        margin-bottom: 22px;
+      }
+
+      .eyebrow {
+        margin: 0 0 10px;
+        color: var(--accent);
+        font-size: 0.9rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 0 0 10px;
+        font-size: clamp(2.2rem, 5vw, 4rem);
+        line-height: 0.95;
+      }
+
+      .subhead {
+        max-width: 60ch;
+        margin: 0;
+        color: var(--muted);
+        font-size: 1.05rem;
+        line-height: 1.5;
+      }
+
+      .app-card {
+        background: var(--panel);
+        border: 1px solid rgba(215, 209, 197, 0.9);
+        border-radius: 22px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      .metrics {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        padding: 22px;
+        background: linear-gradient(180deg, rgba(15, 118, 110, 0.08), rgba(15, 118, 110, 0));
+        border-bottom: 1px solid var(--line);
+      }
+
+      .metric {
+        padding: 14px 16px;
+        border: 1px solid rgba(15, 118, 110, 0.14);
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.82);
+      }
+
+      .metric-label {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--muted);
+        font-size: 0.8rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+
+      .metric-value {
+        font-size: 1.8rem;
+        font-weight: 700;
+      }
+
+      .controls {
+        padding: 22px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .demo-mode {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 18px;
+        padding: 14px 16px;
+        border: 1px solid rgba(15, 118, 110, 0.16);
+        border-radius: 16px;
+        background: rgba(15, 118, 110, 0.05);
+      }
+
+      .demo-copy strong {
+        display: block;
+        margin-bottom: 4px;
+        font-size: 0.95rem;
+      }
+
+      .demo-copy span {
+        color: var(--muted);
+        font-size: 0.92rem;
+        line-height: 1.4;
+      }
+
+      .switch-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        white-space: nowrap;
+      }
+
+      .switch-row input {
+        width: 18px;
+        height: 18px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 10px;
+        font-weight: 700;
+      }
+
+      .compose-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 12px;
+      }
+
+      input[type="text"] {
+        width: 100%;
+        padding: 14px 16px;
+        border: 1px solid #b9c3d3;
+        border-radius: 14px;
+        font-size: 1rem;
+      }
+
+      button {
+        border: 0;
+        border-radius: 999px;
+        padding: 13px 18px;
+        font-size: 0.98rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 120ms ease, opacity 120ms ease, background-color 120ms ease;
+      }
+
+      button:hover {
+        transform: translateY(-1px);
+      }
+
+      button:disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
+        transform: none;
+      }
+
+      .primary-btn {
+        background: var(--accent);
+        color: white;
+      }
+
+      .danger-btn {
+        margin-top: 14px;
+        background: var(--danger-soft);
+        color: var(--danger);
+      }
+
+      .danger-btn.enabled {
+        background: var(--danger);
+        color: #fff7f0;
+      }
+
+      .list-wrap {
+        padding: 10px 22px 22px;
+      }
+
+      .list-head {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 16px;
+        margin: 8px 0 12px;
+      }
+
+      .list-head h2 {
+        margin: 0;
+        font-size: 1.2rem;
+      }
+
+      .list-head p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        overflow: hidden;
+      }
+
+      li + li {
+        border-top: 1px solid var(--line);
+      }
+
+      .todo-item {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr) auto;
+        gap: 14px;
+        align-items: center;
+        padding: 16px 18px;
+        background: white;
+        cursor: pointer;
+      }
+
+      .todo-item:hover {
+        background: #fcfaf5;
+      }
+
+      .todo-toggle {
+        width: 24px;
+        height: 24px;
+        border-radius: 999px;
+        border: 2px solid var(--accent);
+        background: transparent;
+        position: relative;
+      }
+
+      .todo-item.complete .todo-toggle {
+        background: var(--accent);
+      }
+
+      .todo-item.complete .todo-toggle::after {
+        content: "";
+        position: absolute;
+        inset: 5px 7px 7px 5px;
+        border-right: 2px solid white;
+        border-bottom: 2px solid white;
+        transform: rotate(40deg);
+      }
+
+      .todo-text {
+        font-size: 1.05rem;
+      }
+
+      .todo-item.complete .todo-text {
+        color: var(--done);
+        text-decoration: line-through;
+        font-style: italic;
+      }
+
+      .todo-status {
+        color: var(--muted);
+        font-size: 0.86rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      .empty-state {
+        margin: 16px 0 0;
+        padding: 18px;
+        border: 1px dashed var(--line);
+        border-radius: 16px;
+        color: var(--muted);
+        background: rgba(255, 255, 255, 0.72);
+      }
+
+      .activity-log {
+        margin-top: 18px;
+        padding: 16px 18px;
+        border: 1px dashed #c8d2e1;
+        border-radius: 16px;
+        background: rgba(241, 245, 249, 0.75);
+      }
+
+      .activity-log h3 {
+        margin: 0 0 10px;
+        font-size: 1rem;
+      }
+
+      .activity-log p {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      @media (max-width: 720px) {
+        .metrics {
+          grid-template-columns: 1fr;
+        }
+
+        .compose-row {
+          grid-template-columns: 1fr;
+        }
+
+        .list-head {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app" class="shell">
+      <header class="hero">
+        <p class="eyebrow">Week 11 Agent Demo</p>
+        <h1>{{ title }}</h1>
+        <p class="subhead">
+          A minimal Vue page designed for visible browser automation. The agent can click,
+          type, evaluate JavaScript, inspect the DOM, and verify state changes in real time.
+        </p>
+      </header>
+
+      <main class="app-card">
+        <section class="metrics">
+          <article class="metric">
+            <span class="metric-label">Total Tasks</span>
+            <span class="metric-value" data-testid="total-count">{{ todos.length }}</span>
+          </article>
+          <article class="metric">
+            <span class="metric-label">Completed</span>
+            <span class="metric-value" data-testid="complete-count">{{ completedCount }}</span>
+          </article>
+          <article class="metric">
+            <span class="metric-label">Remaining</span>
+            <span class="metric-value" data-testid="remaining-count">{{ remainingCount }}</span>
+          </article>
+        </section>
+
+        <section class="controls">
+          <div class="demo-mode">
+            <div class="demo-copy">
+              <strong>Visible Cursor Mode</strong>
+              <span>
+                Turn this on when you want students to watch a theatrical cursor move
+                around the screen during automation.
+              </span>
+            </div>
+            <label class="switch-row" for="cursorModeToggle">
+              <input
+                id="cursorModeToggle"
+                data-testid="cursor-mode-toggle"
+                type="checkbox"
+                v-model="showDemoCursor"
+              >
+              <span>{{ showDemoCursor ? "On" : "Off" }}</span>
+            </label>
+          </div>
+
+          <label for="taskInput">Add a task for the agent to manipulate</label>
+          <div class="compose-row">
+            <input
+              id="taskInput"
+              data-testid="task-input"
+              type="text"
+              v-model.trim="taskInput"
+              @keyup.enter="addItem"
+              placeholder="Example: Review Week 11 prompts"
+            >
+            <button
+              class="primary-btn"
+              data-testid="add-button"
+              @click="addItem"
+            >
+              Add Task
+            </button>
+          </div>
+          <button
+            class="danger-btn"
+            :class="{ enabled: completedCount > 0 }"
+            data-testid="remove-completed-button"
+            :disabled="completedCount === 0"
+            @click="deleteCompleted"
+          >
+            Remove Completed ({{ completedCount }})
+          </button>
+        </section>
+
+        <section class="list-wrap">
+          <div class="list-head">
+            <h2>Todo Queue</h2>
+            <p data-testid="status-line">{{ statusLine }}</p>
+          </div>
+
+          <ul v-if="todos.length" data-testid="todo-list">
+            <todo-item
+              v-for="todo in todos"
+              :key="todo.id"
+              :todo="todo"
+              @toggle="toggleItem"
+            ></todo-item>
+          </ul>
+
+          <p v-else class="empty-state" data-testid="empty-state">
+            No tasks left. The agent cleaned the page completely.
+          </p>
+
+          <section class="activity-log" aria-live="polite">
+            <h3>Latest Action</h3>
+            <p data-testid="activity-log">{{ lastAction }}</p>
+          </section>
+        </section>
+      </main>
+      <div
+        class="demo-cursor"
+        :class="{ visible: showDemoCursor && cursor.visible, pressed: cursor.pressed }"
+        :style="{ transform: cursorTransform }"
+        aria-hidden="true"
+        data-testid="demo-cursor"
+      ></div>
+    </div>
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <script>
+      const starterTodos = [
+        { id: 1497141891479, task: "Go to the gym", done: true },
+        { id: 1497141913701, task: "Cook dinner", done: false },
+        { id: 1497141937545, task: "Check assignment", done: false }
+      ];
+
+      const App = Vue.createApp({
+        data() {
+          return {
+            title: "Playwright Todo Demo",
+            taskInput: "",
+            todos: starterTodos.map(todo => ({ ...todo })),
+            lastAction: "Waiting for the next browser action.",
+            showDemoCursor: true,
+            cursor: {
+              x: -999,
+              y: -999,
+              visible: false,
+              pressed: false
+            }
+          };
+        },
+        computed: {
+          completedCount() {
+            return this.todos.filter(todo => todo.done).length;
+          },
+          remainingCount() {
+            return this.todos.filter(todo => !todo.done).length;
+          },
+          statusLine() {
+            if (!this.todos.length) {
+              return "0 tasks on screen";
+            }
+
+            const noun = this.todos.length === 1 ? "task" : "tasks";
+            return `${this.todos.length} ${noun} visible on the page`;
+          },
+          cursorTransform() {
+            return `translate3d(${this.cursor.x - 9}px, ${this.cursor.y - 9}px, 0)`;
+          }
+        },
+        mounted() {
+          window.addEventListener("mousemove", this.trackPointer);
+          window.addEventListener("mousedown", this.pressPointer);
+          window.addEventListener("mouseup", this.releasePointer);
+          window.addEventListener("mouseleave", this.hidePointer);
+        },
+        beforeUnmount() {
+          window.removeEventListener("mousemove", this.trackPointer);
+          window.removeEventListener("mousedown", this.pressPointer);
+          window.removeEventListener("mouseup", this.releasePointer);
+          window.removeEventListener("mouseleave", this.hidePointer);
+        },
+        methods: {
+          nextId() {
+            return Date.now();
+          },
+          trackPointer(event) {
+            this.cursor.x = event.clientX;
+            this.cursor.y = event.clientY;
+            this.cursor.visible = true;
+          },
+          pressPointer(event) {
+            this.trackPointer(event);
+            this.cursor.pressed = true;
+          },
+          releasePointer(event) {
+            this.trackPointer(event);
+            this.cursor.pressed = false;
+          },
+          hidePointer() {
+            this.cursor.visible = false;
+            this.cursor.pressed = false;
+          },
+          addItem() {
+            if (!this.taskInput) {
+              window.alert("Please type in a task");
+              return;
+            }
+
+            const newTask = {
+              id: this.nextId(),
+              task: this.taskInput,
+              done: false
+            };
+
+            this.todos.push(newTask);
+            this.lastAction = `Added "${newTask.task}" to the todo list.`;
+            this.taskInput = "";
+          },
+          toggleItem(id) {
+            const todo = this.todos.find(item => item.id === id);
+            if (!todo) {
+              return;
+            }
+
+            todo.done = !todo.done;
+            this.lastAction = todo.done
+              ? `Marked "${todo.task}" complete.`
+              : `Marked "${todo.task}" active again.`;
+          },
+          deleteCompleted() {
+            const removed = this.todos.filter(todo => todo.done).map(todo => todo.task);
+            this.todos = this.todos.filter(todo => !todo.done);
+            this.lastAction = removed.length
+              ? `Removed ${removed.length} completed task(s): ${removed.join(", ")}.`
+              : "No completed tasks were removed.";
+          }
+        }
+      });
+
+      App.component("todo-item", {
+        props: ["todo"],
+        emits: ["toggle"],
+        template: `
+          <li
+            class="todo-item"
+            :class="{ complete: todo.done }"
+            :data-testid="'todo-item-' + todo.id"
+            @click="$emit('toggle', todo.id)"
+          >
+            <span class="todo-toggle" aria-hidden="true"></span>
+            <span class="todo-text">{{ todo.task }}</span>
+            <span class="todo-status">{{ todo.done ? "done" : "active" }}</span>
+          </li>
+        `
+      });
+
+      App.mount("#app");
+    </script>
+  </body>
+</html>

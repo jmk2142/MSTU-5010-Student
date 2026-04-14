@@ -1,0 +1,9 @@
+{
+  "name": "week11-playwright-todo-agent-demo",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Week 11 demo for visible browser automation with Playwright",
+  "scripts": {
+    "start": "node server.js"
+  }
+}
