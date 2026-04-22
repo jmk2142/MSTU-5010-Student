@@ -39,6 +39,17 @@ Come to class ready to discuss:
 4. How does your project preserve or rethink authorship?
 5. What constraints, prompts, or interactions make expression more deliberate rather than less?
 
+## Optional Supplement
+If you want to explore MCP servers as a possible support for your project work, see:
+
+- [MCP Servers Supplement](./MCP-Servers-Supplement.md)
+- [Teddy Lane - MCP Instructions.pdf](./Teddy%20Lane%20-%20MCP%20Instructions.pdf)
+- [Figma MCP Demo](https://youtu.be/ApfBy5EBqr0)
+
+This is optional.
+It is here for students who want an inroad into design- and workflow-oriented MCP use, especially through tools like Figma.
+Special thanks to Teddy Lane for contributing the video and PDF guide.
+
 ## Weekly Structure
 Each week in this part of the course, you do the same three things:
 
